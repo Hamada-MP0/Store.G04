@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Store.G04.Apis/Store.G04.Apis.csproj" />
+  <Project Path="Store.G04.Core/Store.G04.Core.csproj" />
+  <Project Path="Store.G04.Repository/Store.G04.Repository.csproj" />
+  <Project Path="Store.G04.Service/Store.G04.Service.csproj" />
+</Solution>
