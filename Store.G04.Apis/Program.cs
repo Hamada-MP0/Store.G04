@@ -32,7 +32,7 @@ namespace Store.G04.Apis
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(cfg =>
             {
-                cfg.AddProfile<ProductProfile>();
+                cfg.AddProfile(new ProductProfile(builder.Configuration));
             });
             var app = builder.Build();
 
@@ -66,6 +66,7 @@ namespace Store.G04.Apis
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseStaticFiles();   // Enable serving static files from wwwroot folder //  to show images in swagger 
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
@@ -77,4 +78,6 @@ namespace Store.G04.Apis
             app.Run();
         }
     }
+
+
 }

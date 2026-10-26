@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Store.G04.Core.Dtos.Products;
 using Store.G04.Core.Entity;
+using Store.G04.Core.HelperPage;
 using Store.G04.Core.Services.Contract;
+using Store.G04.Core.Specifications.Prodicts;
 
 namespace Store.G04.Apis.Controllers
 {
@@ -15,12 +17,12 @@ namespace Store.G04.Apis.Controllers
         public ProductsController(IProductServices productServices)
         {
             _productServices = productServices;
-        }
-        //products/
+        } 
+        //products/             ,,,  sort with Name | price 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts([FromQuery]ProductSpecParams specParams)
         {
-            var products = await _productServices.GetAllProductsAsync();
+            var products = await _productServices.GetAllProductsAsync(specParams);
             return Ok(products);
         }
         //products/id

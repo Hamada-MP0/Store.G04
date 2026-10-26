@@ -19,5 +19,7 @@ namespace Store.G04.Core.Dtos.Products
         public int? TypeId { get; set; }//FK // يمكن رقم أو null
         public string TypeName { get; set; }
 
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
     }
 }

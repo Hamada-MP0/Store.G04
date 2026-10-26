@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Store.G04.Core.Specifications;
 
 namespace Store.G04.Repository.Repositories
 {
@@ -20,7 +21,7 @@ namespace Store.G04.Repository.Repositories
         {
             if(typeof(TEntity) == typeof(Core.Entity.Product))
             {
-                return (IEnumerable<TEntity>)await _context.Products.Include(p => p.Brand)
+                return (IEnumerable<TEntity>)await _context.Products.OrderBy(static p => p.Name).Include(p => p.Brand)
                                       .Include(p => p.Type)
                                       .ToListAsync();
             }
@@ -30,9 +31,8 @@ namespace Store.G04.Repository.Repositories
         {
             if (typeof(TEntity) == typeof(Core.Entity.Product))
             {
-                return  await _context.Products.Include(p => p.Brand)
-                                      .Include(p => p.Type)
-                                      .FirstOrDefaultAsync(p => p.Id == id as int? ) as TEntity;
+                // return  await _context.Products.Include(p => p.Brand).Include(p => p.Type).FirstOrDefaultAsync(p => p.Id == id as int? ) as TEntity;
+                return await _context.Products.Where(p => p.Id == id as int?).Include(p => p.Brand).Include(p => p.Type).FirstOrDefaultAsync() as TEntity;
             }
             return await _context.Set<TEntity>().FindAsync(id);
 
@@ -48,6 +48,35 @@ namespace Store.G04.Repository.Repositories
         public void Delete(TEntity entity)
         {
            _context.Set<TEntity>().Remove(entity);
+        }
+
+
+
+        private IQueryable<TEntity> Apply(ISpecifications<TEntity,Tkey> Spec)
+        {
+            return SpecificationEvaluator<TEntity, Tkey>.GetQuery(_context.Set<TEntity>(), Spec);
+        }
+        public async Task<IEnumerable<TEntity>> GetAllًWithSpecAsync(ISpecifications<TEntity, Tkey> specification)
+        {
+            return await Apply(specification).ToListAsync();
+        }
+
+        public async Task<TEntity> GetByIdWithSpecAsync(ISpecifications<TEntity, Tkey> specification)
+        {
+            return await Apply(specification).FirstOrDefaultAsync();
+
+        }
+
+        //public Task GetAllًWithSpecAsync()
+        //{
+        //    throw new NotImplementedException();
+
+
+        //}
+
+        public async Task<int> CountAsync(ISpecifications<TEntity, Tkey> specification)
+        {
+           return await Apply(specification).CountAsync();
         }
     }
 }
