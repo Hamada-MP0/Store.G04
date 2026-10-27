@@ -7,9 +7,8 @@ namespace Store.G04.Apis.Controllers
 {
 
     //: ASP.NET Core بيستبدلها باسم الـ Controller من غير كلمة Controller، يعني هنا Buggy
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BuggyController : ControllerBase
+    
+    public class BuggyController : BaseApiController
     {
         private readonly StoreDbContext _context;
     
@@ -58,6 +57,9 @@ namespace Store.G04.Apis.Controllers
           //the model state is automatically validated by the framework, 
           // there is services is built in  is deals with validation errors and returns a 400 Bad Request response with the validation errors in the response body
           // the solution .. go to the program.cs file and configure the ApiBehaviorOptions to return a custom response instead of the default 400 Bad Request response
+
+
+
 
             return Ok(id); 
 
