@@ -1,12 +1,16 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Store.G04.Apis.Error;
+using Store.G04.Apis.MiddleWares;
 using Store.G04.Core;
+using Store.G04.Core.Mapping.Products;
 using Store.G04.Core.Services.Contract;
 using Store.G04.Repository;
 using Store.G04.Repository.Data;
 using Store.G04.Repository.Data.Context;
 using Store.G04.Service.Services.Products;
-using Store.G04.Core.Mapping.Products;
 namespace Store.G04.Apis
 {
     public class Program
@@ -34,7 +38,32 @@ namespace Store.G04.Apis
             {
                 cfg.AddProfile(new ProductProfile(builder.Configuration));
             });
+            // to deals with the model validation error and return a custom response instead of the default 400 Bad Request response
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = (actionContext) =>
+                {
+                 var Errors = actionContext.ModelState.Where(p =>p.Value.Errors.Count()>0)
+                    .SelectMany(p => p.Value.Errors)
+                    .Select(E => E.ErrorMessage)
+                    .ToArray();
+
+                    var Response = new ApiValidationErrorResponse()
+                    {
+                        Errors = Errors
+                    };
+                    return new BadRequestObjectResult(Response)
+                    {
+                        ContentTypes = { "application/json" }
+                    };
+
+
+                };
+            });
+
             var app = builder.Build();
+
+            app.UseMiddleware<Exceptionmiddleware>();
 
             // Database Migration and Seeding
             using (var scope = app.Services.CreateScope())
@@ -66,8 +95,9 @@ namespace Store.G04.Apis
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseStatusCodePagesWithReExecute("/error/{0}"); // to handle the status code pages and redirect to the error controller 
             app.UseStaticFiles();   // Enable serving static files from wwwroot folder //  to show images in swagger 
-
+        
             app.UseHttpsRedirection();
             app.UseAuthorization();
 
