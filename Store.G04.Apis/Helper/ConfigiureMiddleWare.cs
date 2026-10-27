@@ -52,7 +52,7 @@ namespace Store.G04.Apis.Helper
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
-            app.MapGet("/", () => "Welcome to Store API!");
+            app.MapGet("/", () => "Welcome to Store API !!");
             return app;
         }
     }
