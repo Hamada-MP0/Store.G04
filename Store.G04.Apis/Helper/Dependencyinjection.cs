@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 using Store.G04.Apis.Error;
 using Store.G04.Core;
+using Store.G04.Core.Mapping.Basket;
 using Store.G04.Core.Mapping.Products;
+using Store.G04.Core.Repositories.Contract;
 using Store.G04.Core.Services.Contract;
 using Store.G04.Repository;
 using Store.G04.Repository.Data.Context;
+using Store.G04.Repository.Repositories;
 using Store.G04.Service.Services.Products;
 
 namespace Store.G04.Apis.Helper
@@ -21,6 +25,7 @@ namespace Store.G04.Apis.Helper
             services.AddUserDefinedServices();
             services.AddAutoMapperService(configuration);
             services.ConfigureInvalidModelStateResponseFactoryService(configuration );
+            services.AddRedisServices(configuration);
 
             return services;
         }
@@ -60,7 +65,7 @@ namespace Store.G04.Apis.Helper
             //  this method is used to add the user defined services that are required for the application to run, such as repositories, services, etc.
             services.AddScoped<IProductServices, ProductService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            services.AddScoped<IBasketRepositories, BasketRepository>();
             return services;
         }
 
@@ -73,6 +78,10 @@ namespace Store.G04.Apis.Helper
                 cfg.AddProfile(new ProductProfile(configuration));
             });
 
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile(new BasketProfile());
+            });
             return services;
         }
 
@@ -108,10 +117,21 @@ namespace Store.G04.Apis.Helper
             return services;
         }
 
-       
 
 
 
+
+        private static IServiceCollection AddRedisServices(this IServiceCollection services ,IConfiguration configuration)
+        {
+            services.AddSingleton<IConnectionMultiplexer>((ServiceProvider) =>
+            {
+             var connect=   configuration.GetConnectionString("Radis");
+            
+            return ConnectionMultiplexer.Connect(connect);
+            });
+
+            return services;
+        }
 
 
 
