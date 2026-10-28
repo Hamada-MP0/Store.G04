@@ -56,12 +56,19 @@ namespace Store.G04.Apis.Helper
             // Configure the HTTP request pipeline.
             app.UseMiddleware<Exceptionmiddleware>();
 
-            app.UseStatusCodePagesWithReExecute("/error/{0}"); // to handle the status code pages and redirect to the error controller 
-            app.UseStaticFiles();   // Enable serving static files from wwwroot folder //  to show images in swagger 
+            if (!app.Environment.IsDevelopment())
+            {// to handle the status code pages and redirect to the error controller
+                app.UseStatusCodePagesWithReExecute("/error/{0}");
+            }
 
+            app.UseStaticFiles(); // Enable serving static files from wwwroot folder //  to show images in swagger 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllers();
+          
             app.MapGet("/", () => "Welcome to Store API !!");
             return app;
         }

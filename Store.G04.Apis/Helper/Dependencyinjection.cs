@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using Store.G04.Apis.Error;
 using Store.G04.Core;
 using Store.G04.Core.Entity.Identity;
+using Store.G04.Core.Mapping.Auth;
 using Store.G04.Core.Mapping.Basket;
 using Store.G04.Core.Mapping.Products;
 using Store.G04.Core.Repositories.Contract;
@@ -17,6 +20,7 @@ using Store.G04.Service.Services.Cashe;
 using Store.G04.Service.Services.Products;
 using Store.G04.Service.Services.Service;
 using Store.G04.Service.Services.Tokens;
+using System.Text;
 
 namespace Store.G04.Apis.Helper
 {
@@ -33,6 +37,7 @@ namespace Store.G04.Apis.Helper
             services.ConfigureInvalidModelStateResponseFactoryService(configuration );
             services.AddRedisServices(configuration);
             services.AddIdentityeSrvices();
+            services.AddAuthenticationSrvices(configuration);
 
             return services;
         }
@@ -81,6 +86,7 @@ namespace Store.G04.Apis.Helper
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBasketRepositories, BasketRepository>();
             services.AddScoped<ICasheService, CasheService>();
+            
             return services;
         }
 
@@ -96,6 +102,10 @@ namespace Store.G04.Apis.Helper
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile(new BasketProfile());
+            });
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile(new AuthenticationProfile());
             });
             return services;
         }
@@ -158,6 +168,29 @@ namespace Store.G04.Apis.Helper
             return services;
         }
 
+        private static IServiceCollection AddAuthenticationSrvices(this IServiceCollection services , IConfiguration configuration)
+        {
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options=>{
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer=true,
+                    ValidIssuer = configuration["JWT:Issuer"],
+                    ValidateAudience=true,
+                    ValidAudience = configuration["JWT:Audience"],
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey=true ,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
+
+                };  
+            });
+
+            return services;
+        }
 
 
 

@@ -1,19 +1,31 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Store.G04.Apis.Error;
 
 namespace Store.G04.Apis.Controllers
 {
     [Route("error/{code}")]
     [ApiController]
-    [ApiExplorerSettings(IgnoreApi = true)] // to hide this controller from swagger
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ErrorsController : ControllerBase
-    { // if any request to endpoint that does not exist, it will be redirected to this controller and return a 404 error
-
-
+    {
+        [HttpGet]
         public IActionResult Error(int code)
         {
-            return NotFound(new ApiErrorResponse(StatusCodes.Status404NotFound, "Page not found."));
+            var message = code switch
+            {
+                400 => "Bad Request",
+                401 => "Unauthorized",
+                403 => "Forbidden",
+                404 => "Page not found.",
+                405 => "Method not allowed.",
+                415 => "Unsupported media type.",
+                429 => "Too many requests.",
+                _ => "An error occurred."
+            };
+
+            return StatusCode(
+                code,
+                new ApiErrorResponse(code, message));
         }
     }
 }

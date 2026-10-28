@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Store.G04.Apis.Attriibute;
 using Store.G04.Apis.Error;
 using Store.G04.Core.Dtos.Products;
@@ -20,10 +21,11 @@ namespace Store.G04.Apis.Controllers
             _productServices = productServices;
         }
 
-        /// <summary>
         /// Get all products with pagination, filtering, and sorting
-        /// </summary>
+       
         [HttpGet]
+        [Authorize]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(PaginationsRESP<ProductDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [Cashed(100)]
@@ -37,10 +39,11 @@ namespace Store.G04.Apis.Controllers
             return Ok(products);
         }
 
-        /// <summary>
         /// Get product by ID
-        /// </summary>
+  
         [HttpGet("{id:int}")]
+        [Authorize]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
@@ -57,9 +60,10 @@ namespace Store.G04.Apis.Controllers
             return Ok(product);
         }
 
-        /// <summary>
+
         /// Get all brands
-        /// </summary>
+        [Authorize]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         [HttpGet("brands")]
         [ProducesResponseType(typeof(IEnumerable<TypeBrandDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TypeBrandDto>>> GetAllBrands()
@@ -68,10 +72,12 @@ namespace Store.G04.Apis.Controllers
             return Ok(brands);
         }
 
-        /// <summary>
+      
         /// Get all product types
-        /// </summary>
+      
         [HttpGet("types")]
+        [Authorize]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(IEnumerable<TypeBrandDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TypeBrandDto>>> GetAllTypes()
         {
@@ -79,12 +85,14 @@ namespace Store.G04.Apis.Controllers
             return Ok(types);
         }
 
-        /// <summary>
+       
         /// Create a new product
-        /// </summary>
+      
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ProductDto>> AddProduct([FromBody] Product product)
         {
             if (product is null)
@@ -107,12 +115,14 @@ namespace Store.G04.Apis.Controllers
                 productDto);
         }
 
-        /// <summary>
+
         /// Update an existing product
-        /// </summary>
+
         [HttpPut("{id:int}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
         {
@@ -145,12 +155,13 @@ namespace Store.G04.Apis.Controllers
             return NoContent();
         }
 
-        /// <summary>
         /// Delete a product
-        /// </summary>
+
         [HttpDelete("{id:int}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteProduct(int id)
         {

@@ -10,7 +10,7 @@ namespace Store.G04.Repository.Identity
     {
         public async static Task SeedAppUserAsync(UserManager<AppUser> _UserManager )
         {
-            if(_UserManager.Users.Count()==1)
+            if(_UserManager.Users.Count()==0)
             {
                 var User = new AppUser()
                 {
