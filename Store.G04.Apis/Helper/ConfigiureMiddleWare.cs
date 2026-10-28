@@ -1,7 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Store.G04.Apis.MiddleWares;
+using Store.G04.Core.Entity.Identity;
 using Store.G04.Repository.Data;
 using Store.G04.Repository.Data.Context;
+using Store.G04.Repository.Identity;
+using Store.G04.Repository.Identity.Context;
 
 namespace Store.G04.Apis.Helper
 {
@@ -18,7 +22,10 @@ namespace Store.G04.Apis.Helper
 
                 var context =
                     services.GetRequiredService<StoreDbContext>();
-
+                var Identitycontext =
+                    services.GetRequiredService<StoreIdentityDBContext>();
+                var userManager =
+                   services.GetRequiredService<UserManager<AppUser>>();   
                 var loggerFactory =
                     services.GetRequiredService<ILoggerFactory>();
 
@@ -26,6 +33,9 @@ namespace Store.G04.Apis.Helper
                 {
                     await context.Database.MigrateAsync();
                     await StoreDbContextSeed.SeedAsync(context);
+
+                    await Identitycontext.Database.MigrateAsync();
+                    await StoreIdentityDbContextSeed.SeedAppUserAsync(userManager);
                 }
                 catch (Exception ex)
                 {

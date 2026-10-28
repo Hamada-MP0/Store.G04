@@ -1,17 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using Store.G04.Apis.Error;
 using Store.G04.Core;
+using Store.G04.Core.Entity.Identity;
 using Store.G04.Core.Mapping.Basket;
 using Store.G04.Core.Mapping.Products;
 using Store.G04.Core.Repositories.Contract;
 using Store.G04.Core.Services.Contract;
 using Store.G04.Repository;
 using Store.G04.Repository.Data.Context;
+using Store.G04.Repository.Identity.Context;
 using Store.G04.Repository.Repositories;
 using Store.G04.Service.Services.Cashe;
 using Store.G04.Service.Services.Products;
+using Store.G04.Service.Services.Service;
+using Store.G04.Service.Services.Tokens;
 
 namespace Store.G04.Apis.Helper
 {
@@ -27,6 +32,7 @@ namespace Store.G04.Apis.Helper
             services.AddAutoMapperService(configuration);
             services.ConfigureInvalidModelStateResponseFactoryService(configuration );
             services.AddRedisServices(configuration);
+            services.AddIdentityeSrvices();
 
             return services;
         }
@@ -57,7 +63,12 @@ namespace Store.G04.Apis.Helper
                     configuration.GetConnectionString(
                         "DefaultConnection"));
             });
-
+            services.AddDbContext<StoreIdentityDBContext>(options =>
+            {
+                options.UseSqlServer(
+                    configuration.GetConnectionString(
+                        "DefaultConnection"));
+            });
             return services;
         }
 
@@ -66,6 +77,8 @@ namespace Store.G04.Apis.Helper
             //  this method is used to add the user defined services that are required for the application to run, such as repositories, services, etc.
             services.AddScoped<IProductServices, ProductService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBasketRepositories, BasketRepository>();
             services.AddScoped<ICasheService, CasheService>();
             return services;
@@ -137,7 +150,13 @@ namespace Store.G04.Apis.Helper
 
 
 
+        private static IServiceCollection AddIdentityeSrvices(this IServiceCollection services)
+        {
 
+            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<StoreIdentityDBContext>(); 
+
+            return services;
+        }
 
 
 
