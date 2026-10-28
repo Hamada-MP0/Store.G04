@@ -1,4 +1,5 @@
 ﻿using Store.G04.Core.Entity;
+using Store.G04.Core.Entity.Order;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -39,6 +40,18 @@ namespace Store.G04.Repository.Data
                 {
                     await _context.Products.AddRangeAsync(products);
                  
+                }
+
+
+            }
+            if (_context.DeliveryMethods .Count() == 0)
+            {
+                var deliveryData = File.ReadAllText(@"..\Store.G04.Repository\Data\DataSeed\delivery.json");
+                var DeliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryData);
+                if (DeliveryMethods is not null && DeliveryMethods.Count() > 0)
+                {
+                    await _context.DeliveryMethods.AddRangeAsync(DeliveryMethods);
+
                 }
 
 
