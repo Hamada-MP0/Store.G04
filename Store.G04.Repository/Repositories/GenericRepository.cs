@@ -5,17 +5,14 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Store.G04.Core.Specifications;
+using Store.G04.Core.Entity.Order;
+using Store.G04.Core.Specifications.Orders;
 
 namespace Store.G04.Repository.Repositories
 {
-    public class GenericRepository<TEntity, Tkey> : IGenericRepository<TEntity, Tkey> where TEntity : Core.Entity.BaseEntity<Tkey>
+    public class GenericRepository<TEntity, Tkey>(StoreDbContext context) : IGenericRepository<TEntity, Tkey> where TEntity : Core.Entity.BaseEntity<Tkey>
     {
-        private readonly StoreDbContext _context;
-
-        public GenericRepository(StoreDbContext context)
-        {
-            _context = context;
-        }
+        private readonly StoreDbContext _context = context;
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
@@ -77,6 +74,16 @@ namespace Store.G04.Repository.Repositories
         public async Task<int> CountAsync(ISpecifications<TEntity, Tkey> specification)
         {
            return await Apply(specification).CountAsync();
+        }
+
+        public Task GetAllًWithSpecAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Order?> GetWithSpecAsync(OrderSpecification spec)
+        {
+            throw new NotImplementedException();
         }
     }
 }

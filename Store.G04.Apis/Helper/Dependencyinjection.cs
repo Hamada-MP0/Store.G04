@@ -9,6 +9,7 @@ using Store.G04.Core;
 using Store.G04.Core.Entity.Identity;
 using Store.G04.Core.Mapping.Auth;
 using Store.G04.Core.Mapping.Basket;
+using Store.G04.Core.Mapping.Orders;
 using Store.G04.Core.Mapping.Products;
 using Store.G04.Core.Repositories.Contract;
 using Store.G04.Core.Services.Contract;
@@ -17,6 +18,7 @@ using Store.G04.Repository.Data.Context;
 using Store.G04.Repository.Identity.Context;
 using Store.G04.Repository.Repositories;
 using Store.G04.Service.Services.Cashe;
+using Store.G04.Service.Services.Orders;
 using Store.G04.Service.Services.Products;
 using Store.G04.Service.Services.Service;
 using Store.G04.Service.Services.Tokens;
@@ -86,6 +88,9 @@ namespace Store.G04.Apis.Helper
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBasketRepositories, BasketRepository>();
             services.AddScoped<ICasheService, CasheService>();
+            services.AddScoped<IOrderService, OrderService>();
+
+            
             
             return services;
         }
@@ -106,6 +111,10 @@ namespace Store.G04.Apis.Helper
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile(new AuthenticationProfile());
+            });
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile(new OrderProfile(configuration));
             });
             return services;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Store.G04.Core.Entity.Order;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

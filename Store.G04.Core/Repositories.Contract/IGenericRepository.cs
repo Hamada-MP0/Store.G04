@@ -1,5 +1,7 @@
 ﻿using Store.G04.Core.Entity;
+using Store.G04.Core.Entity.Order;
 using Store.G04.Core.Specifications;
+using Store.G04.Core.Specifications.Orders;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,8 +18,9 @@ namespace Store.G04.Core.Repositories.Contract
         void Update(TEntity entity);
 
         void Delete(TEntity entity);
-        //Task GetAllًWithSpecAsync();
+        Task GetAllًWithSpecAsync();
 
         Task<int> CountAsync(ISpecifications<TEntity, Tkey> specification);
+        Task<Order?> GetWithSpecAsync(OrderSpecification spec);
     }
 }

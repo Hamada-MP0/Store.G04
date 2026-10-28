@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Store.G04.Core.Entity.Order
+﻿namespace Store.G04.Core.Entity.Order
 {
-    public class Order :BaseEntity<int>
+    public class Order : BaseEntity<int>
     {
         public string BuyerEmail { get; set; }
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.UtcNow;

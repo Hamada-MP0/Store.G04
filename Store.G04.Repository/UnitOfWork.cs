@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Store.G04.Repository
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork :  IUnitOfWork
     {
         private readonly StoreDbContext _context;
         private Hashtable _repositoreys;
@@ -20,6 +20,11 @@ namespace Store.G04.Repository
 
         }
         public Task<int> CommitAsync() => _context.SaveChangesAsync();
+
+        public Task<int> CompletelyAsync()
+        {
+            throw new NotImplementedException();
+        }
 
         public IGenericRepository<TEntity, Tkey> Repository<TEntity, Tkey>() where TEntity : BaseEntity<Tkey>
         {

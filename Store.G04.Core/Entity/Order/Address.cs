@@ -24,6 +24,6 @@ namespace Store.G04.Core.Entity.Order
         public string Country { get; set; }
         public string Street { get; set; }
 
-
+      
     }
 }

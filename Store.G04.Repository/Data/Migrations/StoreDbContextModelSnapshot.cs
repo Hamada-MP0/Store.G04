@@ -255,7 +255,7 @@ namespace Store.G04.Repository.Data.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.OwnsOne("Store.G04.Core.Entity.Order.ProductItemsOrder", "Product", b1 =>
+                    b.OwnsOne("Store.G04.Core.Entity.Order.Store.G04.Core.Entity.Order.ProductItemsOrder", "Product", b1 =>
                         {
                             b1.Property<int>("OrderItemsId")
                                 .HasColumnType("int");
@@ -264,9 +264,8 @@ namespace Store.G04.Repository.Data.Migrations
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("ProductId")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                            b1.Property<int>("ProductId")
+                                .HasColumnType("int");
 
                             b1.Property<string>("ProductName")
                                 .IsRequired()
