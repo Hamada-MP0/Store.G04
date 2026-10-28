@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Store.G04.Core.Entity
+namespace Store.G04.Core.Dtos.Baskets
 {
-    public class BasketItem
+    public class BasketItemDto
     {
         public int Id { get; set; }
         public string ProductName { get; set; }

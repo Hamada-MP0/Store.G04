@@ -1,4 +1,5 @@
 ﻿using Store.G04.Apis.Error;
+using System.Text.Json;
 
 namespace Store.G04.Apis.MiddleWares 
 {
@@ -34,9 +35,9 @@ namespace Store.G04.Apis.MiddleWares
                         :
                         new ApiExceptionsResponse
                         (StatusCodes.Status500InternalServerError, null, "Internal Server Error");
+                var Options = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-
-                var json = System.Text.Json.JsonSerializer.Serialize(response);
+                var json = System.Text.Json.JsonSerializer.Serialize(response, Options);
 
 
                 await Context.Response.WriteAsync(json);

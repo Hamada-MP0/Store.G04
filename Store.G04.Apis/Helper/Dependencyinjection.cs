@@ -10,6 +10,7 @@ using Store.G04.Core.Services.Contract;
 using Store.G04.Repository;
 using Store.G04.Repository.Data.Context;
 using Store.G04.Repository.Repositories;
+using Store.G04.Service.Services.Cashe;
 using Store.G04.Service.Services.Products;
 
 namespace Store.G04.Apis.Helper
@@ -66,6 +67,7 @@ namespace Store.G04.Apis.Helper
             services.AddScoped<IProductServices, ProductService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBasketRepositories, BasketRepository>();
+            services.AddScoped<ICasheService, CasheService>();
             return services;
         }
 

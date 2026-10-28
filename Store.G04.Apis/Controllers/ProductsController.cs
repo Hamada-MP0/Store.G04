@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Store.G04.Apis.Attriibute;
 using Store.G04.Apis.Error;
 using Store.G04.Core.Dtos.Products;
 using Store.G04.Core.Entity;
@@ -25,6 +26,7 @@ namespace Store.G04.Apis.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(PaginationsRESP<ProductDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [Cashed(100)]
         public async Task<ActionResult<PaginationsRESP<ProductDto>>> GetAllProducts(
             [FromQuery] ProductSpecParams specParams)
         {
