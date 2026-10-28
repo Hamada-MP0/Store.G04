@@ -130,5 +130,36 @@ namespace Store.G04.Apis.Controllers
         }
 
 
+        [Authorize]
+        [HttpPut("Address")]
+        public async Task<IActionResult> UpdateAddress(AddressDto addressDto)
+        {
+            var user = await _userManager.FindByEmailWithAddressAsync(User);
+
+            if (user is null)
+                return Unauthorized(new ApiErrorResponse(
+                    StatusCodes.Status401Unauthorized));
+
+            if (user.address is null)
+                return NotFound(new ApiErrorResponse(
+                    StatusCodes.Status404NotFound,
+                    "Address not found"));
+
+            user.address.Fname = addressDto.Fname;
+            user.address.LName = addressDto.LName;
+            user.address.City = addressDto.City;
+            user.address.Country = addressDto.Country;
+            user.address.Street = addressDto.Street;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new ApiErrorResponse(StatusCodes.Status500InternalServerError));
+
+            return Ok(_mapper.Map<AddressDto>(user.address));
+        }
+
     }
 }
